@@ -136,15 +136,14 @@ trait Listify
             return $theScope != $this->stringScopeValue;
         }
 
-        $reflector = new \ReflectionClass($theScope);
-        if($reflector->getName() == 'Illuminate\Database\Eloquent\Relations\BelongsTo')
+        if($theScope instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo)
         {
             $originalVal = $this->getOriginal()[$theScope->getForeignKey()];
             $currentVal = $this->getAttribute($theScope->getForeignKey());
 
             if($originalVal != $currentVal) return TRUE;
         }
-        else if ($reflector->getName() == 'Illuminate\Database\Query\Builder')
+        else if ($theScope instanceof \Illuminate\Database\Query\Builder)
         {
             if(!$this->stringScopeValue)
             {
@@ -183,8 +182,7 @@ trait Listify
             {
                 if(is_object($theScope))
                 {
-                    $reflector = new \ReflectionClass($theScope);
-                    if($reflector->getName() == 'Illuminate\Database\Eloquent\Relations\BelongsTo')
+                    if($theScope instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo)
                     {
                         $relationshipId = $this->getAttribute($theScope->getForeignKey());
 
@@ -197,7 +195,7 @@ trait Listify
                             $theScope = $theScope->getForeignKey() . ' = ' . $this->getAttribute($theScope->getForeignKey());
                         }
                     }
-                    else if ($reflector->getName() == 'Illuminate\Database\Query\Builder')
+                    else if ($theScope instanceof \Illuminate\Database\Query\Builder)
                     {
                         $theQuery = $this->getConditionStringFromQueryBuilder($theScope);
                         $this->stringScopeValue = $theQuery;
